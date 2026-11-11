@@ -1,339 +1,308 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f3f6fc">
-<title>商品利润计算器 V3.0</title>
+<title>商品经营管理系统 V5.0</title>
 <style>
+:root{--blue:#2563eb;--green:#07834f;--red:#dc3545;--bg:#f3f6fc;--ink:#1e293b;--muted:#64748b;--line:#e5eaf2}
 *{box-sizing:border-box}
-body{margin:0;padding:16px;background:#f3f6fc;color:#1e293b;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
-.container{max-width:650px;margin:auto}
-.card{background:white;padding:18px;border-radius:17px;margin-bottom:15px;box-shadow:0 4px 18px #00000008}
-h1{text-align:center;color:#2563eb;font-size:24px}
-.sub{text-align:center;color:#888;font-size:13px}
-h2{font-size:18px}
-label{display:block;margin-top:13px;font-weight:600;font-size:14px}
-input{width:100%;padding:13px;margin-top:7px;border:1px solid #dce3ed;border-radius:10px;font-size:16px}
-button{border:0;border-radius:10px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
-.primary{width:100%;margin-top:18px;background:#2563eb;color:white}
-.save{width:100%;margin-top:10px;background:#07834f;color:white}
-.lang{background:#e8efff;color:#2563eb}
-.result{margin-top:18px;padding:17px;background:#eff6ff;border-radius:13px}
-.profit{font-size:32px;font-weight:bold;color:#07834f;margin:8px 0}
+body{margin:0;padding:14px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.container{max-width:850px;margin:auto}
+header{text-align:center;padding:10px 0 14px}
+h1{margin:6px 0;color:var(--blue);font-size:25px}
+.sub{color:#888;font-size:13px;margin:5px 0 12px}
+.topbar{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.card{background:#fff;padding:17px;border-radius:16px;margin:13px 0;box-shadow:0 4px 18px #00000008}
+h2{font-size:18px;margin:0 0 13px}
+label{display:block;margin-top:12px;font-weight:600;font-size:14px}
+input,select{width:100%;padding:12px;margin-top:6px;border:1px solid #dce3ed;border-radius:10px;font-size:16px;background:#fff;color:var(--ink)}
+button{border:0;border-radius:10px;padding:11px 13px;font-size:14px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:var(--blue);color:white;width:100%;margin-top:16px}
+.save{background:var(--green);color:white;width:100%;margin-top:9px}
+.soft{background:#e8efff;color:var(--blue)}
+.goodbtn{background:#e8f7ef;color:var(--green)}
+.dangerbtn{background:#fff0f0;color:var(--red)}
+.neutral{background:#f1f5f9;color:#475569}
+.result{margin-top:15px;padding:15px;background:#eff6ff;border-radius:13px}
+.profit{font-size:30px;font-weight:800;color:var(--green);margin:6px 0 12px}
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.metrics div{font-size:12px;color:#64748b}
-.metrics b{display:block;color:#1e293b;font-size:16px;margin-top:5px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stat{background:#f8fafc;padding:13px;border-radius:12px}
-.stat span{font-size:12px;color:#64748b}
-.stat b{display:block;font-size:19px;margin-top:7px;overflow-wrap:anywhere}
-.chart{height:150px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid #ddd;padding-top:15px}
+.metrics div{font-size:12px;color:var(--muted)}
+.metrics b{display:block;color:var(--ink);font-size:16px;margin-top:5px;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.stat{background:#f8fafc;padding:12px;border-radius:11px;min-width:0}
+.stat span{font-size:12px;color:var(--muted)}
+.stat b{display:block;font-size:18px;margin-top:6px;overflow-wrap:anywhere}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.actions button{flex:1}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.notice{padding:11px 12px;border-radius:10px;background:#f8fafc;color:#475569;font-size:13px;margin-top:10px;line-height:1.6}
+.notice.warn{background:#fff7ed;color:#9a3412}
+.notice.ok{background:#ecfdf5;color:#047857}
+.chart{height:175px;display:flex;align-items:flex-end;gap:9px;border-bottom:1px solid var(--line);padding:12px 2px 0;overflow:hidden}
 .barbox{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}
-.bar{width:65%;max-width:32px;background:#3b82f6;border-radius:5px 5px 0 0;min-height:3px}
-.bartext{font-size:10px;color:#64748b;margin-top:6px}
-.history{border:1px solid #e5eaf2;padding:13px;border-radius:12px;margin-top:10px}
-.detail{font-size:13px;color:#64748b;line-height:1.9;margin-top:8px}
-.delete{background:#fff0f0;color:#dc3545;margin-top:10px}
-.export{background:#e8f7ef;color:#07834f;width:100%;margin-top:10px}
-.clear{background:#f1f5f9;color:#475569;width:100%;margin-top:10px}
+.bar{width:65%;max-width:34px;border-radius:5px 5px 0 0;min-height:3px;background:#3b82f6}
+.bartext{font-size:10px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.record{border:1px solid var(--line);padding:13px;border-radius:12px;margin-top:10px}
+.detail{font-size:13px;color:var(--muted);line-height:1.8;margin-top:7px}
+.recordhead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pill{font-size:11px;border-radius:30px;padding:4px 8px;background:#ecfdf5;color:#047857;white-space:nowrap}
+.pill.loss{background:#fff1f2;color:#be123c}
 .empty{text-align:center;color:#999;padding:22px}
-@media(max-width:400px){body{padding:10px}.card{padding:14px}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto}
+.small{font-size:12px;color:var(--muted)}
+.hidden{display:none!important}
+footer{text-align:center;color:#94a3b8;font-size:12px;padding:8px 0 20px}
+@media(max-width:600px){body{padding:9px}.card{padding:14px}.stats{grid-template-columns:repeat(2,1fr)}.grid2,.toolbar{grid-template-columns:1fr}.metrics{gap:5px}.metrics b{font-size:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>📦 商品利润计算器</h1>
-<p class="sub">V3.0 · 利润分析 · 数据导出</p>
+<header>
+<h1>📦 商品经营管理系统</h1>
+<p class="sub" id="subtitle">V5.0 · 利润计算 · 经营分析 · 数据安全</p>
+<div class="topbar"><button class="soft" id="langBtn" onclick="toggleLang()">English</button></div>
+</header>
 
-<div style="text-align:right">
-<button class="lang" onclick="toggleLang()" id="langBtn">English</button>
+<section class="card">
+<h2 id="inputTitle">🧮 商品利润计算</h2>
+<div class="grid2">
+<div><label id="nLabel" for="name">商品名称</label><input id="name" placeholder="例如：蓝牙耳机"></div>
+<div><label id="qLabel" for="quantity">销售数量（件）</label><input id="quantity" type="number" value="1" min="1" step="1"></div>
+<div><label id="cLabel" for="cost">商品成本（元/件）</label><input id="cost" type="number" value="30" min="0" step="0.01"></div>
+<div><label id="pLabel" for="price">商品售价（元/件）</label><input id="price" type="number" value="59" min="0" step="0.01"></div>
+<div><label id="sLabel" for="shipping">快递费用（元/件）</label><input id="shipping" type="number" value="5" min="0" step="0.01"></div>
+<div><label id="fLabel" for="fee">平台手续费（%）</label><input id="fee" type="number" value="2" min="0" max="100" step="0.1"></div>
+<div><label id="oLabel" for="other">其他成本（元/件）</label><input id="other" type="number" value="0" min="0" step="0.01"></div>
 </div>
-
-<div class="card">
-<h2 id="inputTitle">商品信息</h2>
-
-<label id="nLabel">商品名称</label>
-<input id="name" placeholder="例如：蓝牙耳机">
-
-<label id="cLabel">商品成本（元）</label>
-<input id="cost" type="number" value="30" min="0" step="0.01">
-
-<label id="pLabel">商品售价（元）</label>
-<input id="price" type="number" value="59" min="0" step="0.01">
-
-<label id="sLabel">快递费用（元）</label>
-<input id="shipping" type="number" value="5" min="0" step="0.01">
-
-<label id="fLabel">平台手续费（%）</label>
-<input id="fee" type="number" value="2" min="0" max="100" step="0.1">
-
-<label id="oLabel">其他成本（元）</label>
-<input id="other" type="number" value="0" min="0" step="0.01">
-
-<label id="qLabel">销售数量（件）</label>
-<input id="quantity" type="number" value="1" min="1" step="1">
-
-<button class="primary" onclick="calculate()" id="calcBtn">计算商品利润</button>
-<button class="save" onclick="saveRecord()" id="saveBtn">💾 保存本次记录</button>
-
-<div class="result">
-<div id="unitLabel">单件利润</div>
-<div class="profit" id="unit">¥0.00</div>
+<button class="primary" id="calcBtn" onclick="calculate()">计算利润</button>
+<button class="save" id="saveBtn" onclick="saveRecord()">💾 保存本次记录</button>
+<div class="result" aria-live="polite">
+<div id="unitLabel">单件利润</div><div class="profit" id="unit">¥0.00</div>
 <div class="metrics">
-<div id="totalLabel">总利润<b id="total">¥0.00</b></div>
-<div id="rateLabel">利润率<b id="rate">0%</b></div>
+<div id="totalLabel">本单总利润<b id="total">¥0.00</b></div>
+<div id="rateLabel">利润率<b id="rate">0.00%</b></div>
 <div id="feeLabel">单件手续费<b id="feeResult">¥0.00</b></div>
 </div>
-<p id="message">请输入商品信息并计算</p>
+<p id="message" class="small">填写商品信息后点击计算</p>
 </div>
-</div>
+<div id="alertBox" class="notice">利润预警：尚未设置阈值</div>
+</section>
 
-<div class="card">
-<h2 id="overviewTitle">📊 经营数据总览</h2>
+<section class="card">
+<h2 id="overviewTitle">📊 经营总览</h2>
 <div class="stats">
 <div class="stat"><span id="salesLabel">总销售额</span><b id="sales">¥0.00</b></div>
 <div class="stat"><span id="profitLabel">累计总利润</span><b id="profitStat">¥0.00</b></div>
 <div class="stat"><span id="itemsLabel">销售总件数</span><b id="items">0</b></div>
-<div class="stat"><span id="recordsLabel">商品记录数</span><b id="records">0</b></div>
+<div class="stat"><span id="recordsLabel">记录数量</span><b id="records">0</b></div>
 </div>
-</div>
+</section>
 
-<div class="card">
-<h2 id="chartTitle">📈 最近7条记录利润趋势</h2>
-<div class="chart" id="chart"></div>
+<section class="card">
+<h2 id="analysisTitle">📈 经营分析</h2>
+<div class="toolbar">
+<div><label id="fromLabel" for="fromDate">开始日期</label><input type="date" id="fromDate" onchange="renderAll()"></div>
+<div><label id="toLabel" for="toDate">结束日期</label><input type="date" id="toDate" onchange="renderAll()"></div>
 </div>
+<div class="actions"><button class="soft" onclick="setRange(7)" id="weekBtn">最近7天</button><button class="soft" onclick="setRange(30)" id="monthBtn">最近30天</button><button class="neutral" onclick="resetRange()" id="allBtn">全部时间</button></div>
+<div class="stats" style="margin-top:12px">
+<div class="stat"><span id="filteredSalesLabel">筛选销售额</span><b id="filteredSales">¥0.00</b></div>
+<div class="stat"><span id="filteredProfitLabel">筛选利润</span><b id="filteredProfit">¥0.00</b></div>
+<div class="stat"><span id="filteredQtyLabel">筛选销量</span><b id="filteredQty">0</b></div>
+<div class="stat"><span id="avgLabel">平均利润率</span><b id="avgRate">0.00%</b></div>
+</div>
+<h3 id="trendTitle" style="font-size:14px;margin:18px 0 4px">最近记录利润趋势</h3>
+<div class="chart" id="chart"><div class="empty">暂无数据</div></div>
+</section>
 
-<div class="card">
-<h2 id="historyTitle">📋 商品历史记录</h2>
-<button class="export" onclick="exportCSV()" id="exportBtn">⬇ 导出 Excel 表格</button>
+<section class="card">
+<h2 id="productsTitle">🏆 商品利润排行</h2>
+<div id="ranking" class="empty">保存记录后显示商品排行</div>
+</section>
+
+<section class="card">
+<h2 id="historyTitle">📋 历史记录</h2>
+<label id="searchLabel" for="search">搜索商品</label>
+<input id="search" placeholder="输入商品名称搜索" oninput="renderHistory()">
+<div class="actions">
+<button class="goodbtn" onclick="exportCSV()" id="csvBtn">导出 CSV</button>
+<button class="soft" onclick="backupJSON()" id="backupBtn">备份全部数据</button>
+<button class="soft" onclick="document.getElementById('restoreFile').click()" id="restoreBtn">恢复备份</button>
+<input class="hidden" type="file" id="restoreFile" accept=".json,application/json" onchange="restoreJSON(event)">
+</div>
+<div id="backupNotice" class="notice">建议定期备份数据。数据目前保存在当前浏览器中。</div>
 <div id="history"></div>
-<button class="clear" onclick="clearHistory()" id="clearBtn">清空全部历史记录</button>
-</div>
-<p class="sub">V3.0 · 数据保存在当前设备</p>
+<button class="dangerbtn" style="width:100%;margin-top:12px" onclick="clearHistory()" id="clearBtn">清空全部记录</button>
+</section>
+
+<section class="card">
+<h2 id="settingsTitle">⚙️ 预警设置</h2>
+<label id="thresholdLabel" for="threshold">最低利润率预警阈值（%）</label>
+<input id="threshold" type="number" min="0" max="100" step="0.1" value="10">
+<button class="primary" onclick="saveSettings()" id="settingsBtn">保存预警设置</button>
+<p class="small" id="settingsHelp">当计算出的利润率低于此数值时，会显示提醒。设置保存在当前设备。</p>
+</section>
+
+<footer id="footer">V5.0 · 请定期备份数据，避免清理浏览器数据造成记录丢失。</footer>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
 const KEY="productProfitHistoryV2";
-let lang="zh";
-
-const text={
+const SETTINGS_KEY="productProfitSettingsV5";
+let lang="zh", latest=null;
+const words={
 zh:{
-input:"商品信息",name:"商品名称",cost:"商品成本（元）",
-price:"商品售价（元）",shipping:"快递费用（元）",
-fee:"平台手续费（%）",other:"其他成本（元）",
-quantity:"销售数量（件）",calc:"计算商品利润",
-save:"💾 保存本次记录",unit:"单件利润",
-total:"总利润",rate:"利润率",feeResult:"单件手续费",
-overview:"📊 经营数据总览",sales:"总销售额",
-profit:"累计总利润",items:"销售总件数",
-records:"商品记录数",chart:"📈 最近7条记录利润趋势",
-history:"📋 商品历史记录",export:"⬇ 导出 Excel 表格",
-clear:"清空全部历史记录",delete:"删除记录",
-empty:"还没有历史记录",good:"🎉 当前商品有利润！",
-bad:"⚠️ 当前商品处于亏损状态！",
-confirm:"确定删除这条记录吗？",
-clearConfirm:"确定清空全部历史记录吗？",
-saved:"保存成功！",fill:"请填写商品名称",
-invalid:"请检查金额、手续费和销售数量。",
-exportEmpty:"暂无可导出的记录。",
-lang:"English",date:"日期",quantityWord:"数量",
-costWord:"成本",priceWord:"售价",shippingWord:"快递",
-feeWord:"手续费",margin:"利润率"
+subtitle:"V5.0 · 利润计算 · 经营分析 · 数据安全",input:"🧮 商品利润计算",name:"商品名称",quantity:"销售数量（件）",cost:"商品成本（元/件）",price:"商品售价（元/件）",shipping:"快递费用（元/件）",fee:"平台手续费（%）",other:"其他成本（元/件）",calc:"计算利润",save:"💾 保存本次记录",unit:"单件利润",total:"本单总利润",rate:"利润率",feeResult:"单件手续费",overview:"📊 经营总览",sales:"总销售额",profit:"累计总利润",items:"销售总件数",records:"记录数量",analysis:"📈 经营分析",from:"开始日期",to:"结束日期",week:"最近7天",month:"最近30天",all:"全部时间",filteredSales:"筛选销售额",filteredProfit:"筛选利润",filteredQty:"筛选销量",avg:"平均利润率",trend:"最近记录利润趋势",products:"🏆 商品利润排行",history:"📋 历史记录",search:"搜索商品",searchHint:"输入商品名称搜索",csv:"导出 CSV",backup:"备份全部数据",restore:"恢复备份",clear:"清空全部记录",settings:"⚙️ 预警设置",threshold:"最低利润率预警阈值（%）",settingsBtn:"保存预警设置",settingsHelp:"当计算出的利润率低于此数值时，会显示提醒。设置保存在当前设备。",footer:"V5.0 · 请定期备份数据，避免清理浏览器数据造成记录丢失。",empty:"暂无历史记录",noRank:"保存记录后显示商品排行",saved:"保存成功！",fill:"请填写商品名称。",invalid:"请检查金额、手续费率和数量；金额不能为负数，手续费率不能超过100%。",good:"🎉 当前商品有利润！",loss:"⚠️ 当前商品处于亏损状态！",low:"利润率低于预警阈值！",ok:"利润率达到预警标准。",alertUnset:"利润预警：尚未设置阈值",thresholdSaved:"预警设置已保存。",confirmDelete:"确定删除这条记录吗？",confirmClear:"确定清空全部历史记录吗？此操作不可撤销。",deleted:"记录已删除。",cleared:"历史记录已清空。",csvEmpty:"暂无可导出的记录。",backupDone:"备份文件已生成。",restoreAsk:"恢复备份会覆盖当前所有历史记录，建议先备份。确定继续吗？",restoreDone:"备份恢复成功！",restoreBad:"文件格式不正确或数据无法读取。",restoreEmpty:"备份文件中没有有效记录。",date:"日期",costWord:"成本",priceWord:"售价",shipWord:"快递",qtyWord:"数量",feeWord:"手续费",margin:"利润率",delete:"删除",totalWord:"总利润",profitRank:"累计利润",unitWord:"件",backupHint:"建议定期备份数据。数据目前保存在当前浏览器中。",noMatch:"没有找到匹配的商品。",rangeErr:"开始日期不能晚于结束日期。"
 },
 en:{
-input:"Product Details",name:"Product Name",cost:"Unit Cost",
-price:"Selling Price",shipping:"Shipping",fee:"Platform Fee (%)",
-other:"Other Cost",quantity:"Quantity",calc:"Calculate Profit",
-save:"💾 Save Record",unit:"Profit per Unit",total:"Total Profit",
-rate:"Profit Margin",feeResult:"Fee per Unit",
-overview:"📊 Business Overview",sales:"Total Sales",
-profit:"Total Profit",items:"Units Sold",records:"Records",
-chart:"📈 Recent 7 Profit Records",history:"📋 History",
-export:"⬇ Export CSV for Excel",clear:"Clear All Records",
-delete:"Delete",empty:"No saved records",good:"🎉 Profitable!",
-bad:"⚠️ Making a loss!",confirm:"Delete this record?",
-clearConfirm:"Clear all history?",saved:"Saved successfully!",
-fill:"Please enter product name",invalid:"Please check your inputs.",
-exportEmpty:"No records to export.",lang:"中文",date:"Date",
-quantityWord:"Quantity",costWord:"Cost",priceWord:"Price",
-shippingWord:"Shipping",feeWord:"Fee",margin:"Margin"
+subtitle:"V5.0 · Profit · Analytics · Data Safety",input:"🧮 Profit Calculator",name:"Product name",quantity:"Quantity",cost:"Unit cost",price:"Selling price",shipping:"Shipping per unit",fee:"Platform fee (%)",other:"Other cost per unit",calc:"Calculate profit",save:"💾 Save record",unit:"Profit per unit",total:"Order total profit",rate:"Profit margin",feeResult:"Fee per unit",overview:"📊 Business overview",sales:"Total sales",profit:"Total profit",items:"Units sold",records:"Records",analysis:"📈 Business analytics",from:"Start date",to:"End date",week:"Last 7 days",month:"Last 30 days",all:"All time",filteredSales:"Filtered sales",filteredProfit:"Filtered profit",filteredQty:"Filtered units",avg:"Average margin",trend:"Recent profit trend",products:"🏆 Product profit ranking",history:"📋 History",search:"Search products",searchHint:"Type a product name",csv:"Export CSV",backup:"Back up all data",restore:"Restore backup",clear:"Clear all records",settings:"⚙️ Alert settings",threshold:"Minimum margin alert (%)",settingsBtn:"Save alert setting",settingsHelp:"A warning appears when calculated margin is below this value. Saved on this device.",footer:"V5.0 · Back up regularly to avoid losing data when browser storage is cleared.",empty:"No history yet",noRank:"Save records to see product ranking",saved:"Saved successfully!",fill:"Please enter a product name.",invalid:"Check amounts, fee rate and quantity. Amounts cannot be negative and fee cannot exceed 100%.",good:"🎉 This product is profitable!",loss:"⚠️ This product is making a loss!",low:"Margin is below your alert threshold!",ok:"Margin meets your alert threshold.",alertUnset:"Profit alert: no threshold configured",thresholdSaved:"Alert setting saved.",confirmDelete:"Delete this record?",confirmClear:"Clear all history? This cannot be undone.",deleted:"Record deleted.",cleared:"History cleared.",csvEmpty:"No records to export.",backupDone:"Backup file generated.",restoreAsk:"Restoring will replace all current history. Back up first if needed. Continue?",restoreDone:"Backup restored successfully!",restoreBad:"Invalid file or unreadable data.",restoreEmpty:"No valid records found in backup.",date:"Date",costWord:"Cost",priceWord:"Price",shipWord:"Shipping",qtyWord:"Qty",feeWord:"Fee",margin:"Margin",delete:"Delete",totalWord:"Total profit",profitRank:"Total profit",unitWord:"units",backupHint:"Back up regularly. Data is currently stored in this browser.",noMatch:"No matching products found.",rangeErr:"Start date cannot be after end date."
+}};
+const tr=k=>words[lang][k]||k;
+const money=n=>(lang==="zh"?"¥":"$")+Number(n||0).toFixed(2);
+function getHistory(){try{const a=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x==="object"):[]}catch(e){return[]}}
+function setHistory(a){localStorage.setItem(KEY,JSON.stringify(a))}
+function getSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{"threshold":10}')||{threshold:10}}catch(e){return{threshold:10}}}
+function getInput(){
+ const d={name:$("name").value.trim(),cost:Number($("cost").value),price:Number($("price").value),shipping:Number($("shipping").value),fee:Number($("fee").value),other:Number($("other").value),quantity:Number($("quantity").value)};
+ if(!d.name){alert(tr("fill"));return null}
+ if([d.cost,d.price,d.shipping,d.fee,d.other,d.quantity].some(v=>!Number.isFinite(v)||v<0)||d.quantity<1||!Number.isInteger(d.quantity)||d.fee>100){alert(tr("invalid"));return null}
+ return d;
 }
-};
-
-function tr(k){return text[lang][k]}
-function money(n){return "¥"+Number(n||0).toFixed(2)}
-
-function getData(){
-const d={
-name:$("name").value.trim(),
-cost:Number($("cost").value),
-price:Number($("price").value),
-shipping:Number($("shipping").value),
-fee:Number($("fee").value),
-other:Number($("other").value),
-quantity:Number($("quantity").value)
-};
-
-if(!d.name){alert(tr("fill"));return null}
-
-if([d.cost,d.price,d.shipping,d.fee,d.other,d.quantity]
-.some(x=>!Number.isFinite(x)||x<0)
-||d.quantity<1||!Number.isInteger(d.quantity)||d.fee>100){
-alert(tr("invalid"));return null;
-}
-return d;
-}
-
 function calculate(){
-const d=getData();
-if(!d)return null;
-
-const feeMoney=d.price*d.fee/100;
-const profit=d.price-d.cost-d.shipping-d.other-feeMoney;
-const total=profit*d.quantity;
-const rate=d.price>0?profit/d.price*100:0;
-
-$("unit").textContent=money(profit);
-$("total").textContent=money(total);
-$("rate").textContent=rate.toFixed(2)+"%";
-$("feeResult").textContent=money(feeMoney);
-$("unit").style.color=profit>=0?"#07834f":"#dc3545";
-$("message").textContent=profit>=0?tr("good"):tr("bad");
-
-return {...d,feeMoney,profit,total,rate,date:new Date().toLocaleString()};
+ const d=getInput();if(!d)return null;
+ const feeMoney=d.price*d.fee/100;
+ const profit=d.price-d.cost-d.shipping-d.other-feeMoney;
+ const total=profit*d.quantity;
+ const rate=d.price>0?profit/d.price*100:0;
+ latest={...d,feeMoney,profit,total,rate,date:new Date().toISOString(),displayDate:new Date().toLocaleString()};
+ $("unit").textContent=money(profit);$("total").textContent=money(total);$("rate").textContent=rate.toFixed(2)+"%";$("feeResult").textContent=money(feeMoney);
+ $("unit").style.color=profit>=0?"#07834f":"#dc3545";
+ $("message").textContent=profit>=0?tr("good"):tr("loss");
+ const threshold=Number(getSettings().threshold);
+ const box=$("alertBox");
+ if(!Number.isFinite(threshold)){box.className="notice";box.textContent=tr("alertUnset")}
+ else if(rate<threshold){box.className="notice warn";box.textContent=tr("low")+" ("+rate.toFixed(2)+"% < "+threshold.toFixed(2)+"%)"}
+ else{box.className="notice ok";box.textContent=tr("ok")+" ("+rate.toFixed(2)+"%)"}
+ return latest;
 }
-
-function getHistory(){
-try{
-const h=JSON.parse(localStorage.getItem(KEY)||"[]");
-return Array.isArray(h)?h:[];
-}catch(e){return []}
-}
-
 function saveRecord(){
-const r=calculate();
-if(!r)return;
-const h=getHistory();
-h.unshift({...r,id:Date.now()+"_"+Math.random().toString(36).slice(2)});
-localStorage.setItem(KEY,JSON.stringify(h));
-renderAll();
-alert(tr("saved"));
+ const r=calculate();if(!r)return;
+ const h=getHistory();h.unshift({...r,id:Date.now()+"_"+Math.random().toString(36).slice(2)});
+ setHistory(h);renderAll();alert(tr("saved"));
 }
-
-function escapeHTML(v){
-return String(v??"").replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",
-'"':"&quot;","'":"&#39;"
-})[c]);
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function validDate(x){const d=new Date(x.date||x.displayDate||"");return Number.isNaN(d.getTime())?null:d}
+function filteredHistory(){
+ const h=getHistory(),from=$("fromDate").value,to=$("toDate").value;
+ if(from&&to&&from>to)return null;
+ return h.filter(x=>{const d=validDate(x);if(!d)return !from&&!to;const day=d.toISOString().slice(0,10);return(!from||day>=from)&&(!to||day<=to)});
 }
-
 function renderStats(h){
-const sales=h.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.quantity)||0),0);
-const profit=h.reduce((s,x)=>s+(Number(x.total)||0),0);
-const qty=h.reduce((s,x)=>s+(Number(x.quantity)||0),0);
-$("sales").textContent=money(sales);
-$("profitStat").textContent=money(profit);
-$("items").textContent=qty;
-$("records").textContent=h.length;
-$("profitStat").style.color=profit<0?"#dc3545":"#07834f";
+ const sales=h.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.quantity)||0),0);
+ const profit=h.reduce((s,x)=>s+(Number(x.total)||0),0);
+ const qty=h.reduce((s,x)=>s+(Number(x.quantity)||0),0);
+ $("sales").textContent=money(sales);$("profitStat").textContent=money(profit);$("items").textContent=qty;$("records").textContent=h.length;
+ $("profitStat").style.color=profit<0?"#dc3545":"#07834f";
 }
-
-function renderChart(h){
-const data=h.slice(0,7).reverse();
-const max=Math.max(1,...data.map(x=>Math.abs(Number(x.total)||0)));
-if(!data.length){
-$("chart").innerHTML='<div class="empty">暂无数据</div>';
-return;
+function renderAnalysis(h){
+ const sales=h.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.quantity)||0),0);
+ const profit=h.reduce((s,x)=>s+(Number(x.total)||0),0);
+ const qty=h.reduce((s,x)=>s+(Number(x.quantity)||0),0);
+ const margin=h.length?h.reduce((s,x)=>s+(Number(x.rate)||0),0)/h.length:0;
+ $("filteredSales").textContent=money(sales);$("filteredProfit").textContent=money(profit);$("filteredQty").textContent=qty;$("avgRate").textContent=margin.toFixed(2)+"%";
+ const data=h.slice(0,10).reverse(),max=Math.max(1,...data.map(x=>Math.abs(Number(x.total)||0)));
+ $("chart").innerHTML=data.length?data.map(x=>{const v=Number(x.total)||0,ht=Math.max(3,Math.abs(v)/max*125);const d=validDate(x);return '<div class="barbox"><div class="bar" style="height:'+ht+'px;background:'+(v<0?'#dc7777':'#3b82f6')+'"></div><div class="bartext">'+(d?d.toLocaleDateString():"—")+'</div></div>'}).join(""):'<div class="empty">'+tr("empty")+'</div>';
 }
-$("chart").innerHTML=data.map(x=>{
-const v=Number(x.total)||0;
-const height=Math.max(3,Math.abs(v)/max*100);
-return '<div class="barbox"><div class="bar" style="height:'+height+'px;background:'+(v<0?'#dc7777':'#3b82f6')+'"></div><div class="bartext">'+escapeHTML(String(x.date||"").slice(0,8))+'</div></div>';
-}).join("");
+function renderRanking(h){
+ const map={};h.forEach(x=>{const n=String(x.name||"").trim()||"—";if(!map[n])map[n]={name:n,profit:0,qty:0,sales:0};map[n].profit+=Number(x.total)||0;map[n].qty+=Number(x.quantity)||0;map[n].sales+=(Number(x.price)||0)*(Number(x.quantity)||0)});
+ const a=Object.values(map).sort((x,y)=>y.profit-x.profit).slice(0,10);
+ $("ranking").innerHTML=a.length?'<div class="tablewrap"><table><thead><tr><th>#</th><th>'+tr("name")+'</th><th>'+tr("profitRank")+'</th><th>'+tr("qtyWord")+'</th></tr></thead><tbody>'+a.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escapeHTML(x.name)+'</td><td style="color:'+(x.profit<0?'#dc3545':'#07834f')+'">'+money(x.profit)+'</td><td>'+x.qty+'</td></tr>').join("")+'</tbody></table></div>':'<div class="empty">'+tr("noRank")+'</div>';
 }
-
 function renderHistory(){
-const h=getHistory();
-if(!h.length){
-$("history").innerHTML='<div class="empty">'+tr("empty")+'</div>';
-return;
+ const query=$("search").value.trim().toLowerCase();
+ const h=getHistory().filter(x=>String(x.name||"").toLowerCase().includes(query));
+ $("history").innerHTML=h.length?h.map(x=>{
+ const d=validDate(x),date=d?d.toLocaleString():String(x.displayDate||x.date||"");
+ const total=Number(x.total)||0;
+ return '<div class="record"><div class="recordhead"><b>📦 '+escapeHTML(x.name||"—")+'</b><span class="pill '+(total<0?'loss':'')+'">'+money(total)+'</span></div><div class="detail">'+tr("date")+"："+escapeHTML(date)+'<br>'+tr("costWord")+"："+money(x.cost)+' · '+tr("priceWord")+"："+money(x.price)+'<br>'+tr("shipWord")+"："+money(x.shipping)+' · '+tr("fee")+"："+Number(x.fee||0)+'%<br>'+tr("qtyWord")+"："+(Number(x.quantity)||0)+' · '+tr("margin")+"："+(Number(x.rate)||0).toFixed(2)+'%</div><button class="dangerbtn" style="margin-top:9px" onclick="deleteRecord('+JSON.stringify(String(x.id))+')">'+tr("delete")+'</button></div>';
+ }).join(""):'<div class="empty">'+(query?tr("noMatch"):tr("empty"))+'</div>';
 }
-
-$("history").innerHTML=h.map(x=>
-'<div class="history"><b>📦 '+escapeHTML(x.name)+'</b>'+
-'<div class="detail">'+
-tr("date")+"："+escapeHTML(x.date)+'<br>'+
-tr("costWord")+"："+money(x.cost)+'<br>'+
-tr("priceWord")+"："+money(x.price)+'<br>'+
-tr("shippingWord")+"："+money(x.shipping)+'<br>'+
-tr("quantityWord")+"："+Number(x.quantity)+'<br>'+
-tr("feeWord")+"："+money(x.feeMoney)+'<br>'+
-tr("margin")+"："+Number(x.rate||0).toFixed(2)+'%'+
-'<br><b>'+tr("total")+"："+money(x.total)+'</b></div>'+
-'<button class="delete" onclick="deleteRecord('+JSON.stringify(String(x.id))+')">'+tr("delete")+'</button></div>'
-).join("");
-}
-
 function renderAll(){
-const h=getHistory();
-renderStats(h);
-renderChart(h);
-renderHistory();
+ const all=getHistory(),filtered=filteredHistory();
+ renderStats(all);
+ if(filtered===null){$("chart").innerHTML='<div class="empty">'+tr("rangeErr")+'</div>';return}
+ renderAnalysis(filtered);renderRanking(all);renderHistory();
 }
-
-function deleteRecord(id){
-if(!confirm(tr("confirm")))return;
-localStorage.setItem(KEY,JSON.stringify(
-getHistory().filter(x=>String(x.id)!==String(id))
-));
-renderAll();
-}
-
-function clearHistory(){
-if(!confirm(tr("clearConfirm")))return;
-localStorage.removeItem(KEY);
-renderAll();
-}
-
+function deleteRecord(id){if(!confirm(tr("confirmDelete")))return;setHistory(getHistory().filter(x=>String(x.id)!==String(id)));renderAll();alert(tr("deleted"))}
+function clearHistory(){if(!confirm(tr("confirmClear")))return;localStorage.removeItem(KEY);renderAll();alert(tr("cleared"))}
+function setRange(days){const end=new Date(),start=new Date();start.setDate(end.getDate()-days+1);$("fromDate").value=start.toISOString().slice(0,10);$("toDate").value=end.toISOString().slice(0,10);renderAll()}
+function resetRange(){$("fromDate").value="";$("toDate").value="";renderAll()}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function exportCSV(){
-const h=getHistory();
-if(!h.length){alert(tr("exportEmpty"));return;}
-const headers=["商品名称","成本","售价","快递费","手续费率","其他成本","数量","单件手续费","单件利润","总利润","利润率","日期"];
-const keys=["name","cost","price","shipping","fee","other","quantity","feeMoney","profit","total","rate","date"];
-const rows=h.map(x=>keys.map(k=>'"'+String(x[k]??"").replace(/"/g,'""')+'"').join(","));
-const csv="\uFEFF"+headers.join(",")+"\r\n"+rows.join("\r\n");
-const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;a.download="商品利润记录.csv";
-a.click();
-URL.revokeObjectURL(url);
+ const h=getHistory();if(!h.length){alert(tr("csvEmpty"));return}
+ const headers=["商品名称","成本","售价","快递费","手续费率","其他成本","数量","单件手续费","单件利润","总利润","利润率","日期"];
+ const keys=["name","cost","price","shipping","fee","other","quantity","feeMoney","profit","total","rate","displayDate"];
+ const rows=h.map(x=>keys.map(k=>csvCell(x[k])).join(","));
+ downloadBlob(new Blob(["\uFEFF"+headers.join(",")+"\r\n"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"}),"商品经营记录.csv");
 }
-
+function backupJSON(){
+ const payload={app:"product-profit-calculator",version:5,exportedAt:new Date().toISOString(),history:getHistory(),settings:getSettings()};
+ downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}),"商品利润数据备份.json");
+ $("backupNotice").textContent=tr("backupDone");
+}
+function restoreJSON(event){
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ if(!confirm(tr("restoreAsk"))){event.target.value="";return}
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const data=JSON.parse(reader.result);
+   const arr=Array.isArray(data)?data:data.history;
+   if(!Array.isArray(arr)){alert(tr("restoreEmpty"));return}
+   const clean=arr.filter(x=>x&&typeof x==="object"&&typeof x.name==="string"&&Number.isFinite(Number(x.total)));
+   if(!clean.length&&arr.length){alert(tr("restoreBad"));return}
+   setHistory(clean);
+   if(data.settings&&Number.isFinite(Number(data.settings.threshold)))localStorage.setItem(SETTINGS_KEY,JSON.stringify({threshold:Math.max(0,Math.min(100,Number(data.settings.threshold)))}));
+   loadSettings();renderAll();alert(tr("restoreDone"));
+  }catch(e){alert(tr("restoreBad"))}
+  finally{event.target.value=""}
+ };
+ reader.onerror=()=>{alert(tr("restoreBad"));event.target.value=""};
+ reader.readAsText(file);
+}
+function saveSettings(){
+ const v=Number($("threshold").value);
+ if(!Number.isFinite(v)||v<0||v>100){alert(tr("invalid"));return}
+ localStorage.setItem(SETTINGS_KEY,JSON.stringify({threshold:v}));
+ if(latest)calculate();else{$("alertBox").className="notice";$("alertBox").textContent=tr("thresholdSaved")}
+ alert(tr("thresholdSaved"));
+}
+function loadSettings(){$("threshold").value=getSettings().threshold??10}
 function toggleLang(){
-lang=lang==="zh"?"en":"zh";
-const map={
-inputTitle:"input",nLabel:"name",cLabel:"cost",
-pLabel:"price",sLabel:"shipping",fLabel:"fee",
-oLabel:"other",qLabel:"quantity",calcBtn:"calc",
-saveBtn:"save",unitLabel:"unit",totalLabel:"total",
-rateLabel:"rate",feeLabel:"feeResult",
-overviewTitle:"overview",salesLabel:"sales",
-profitLabel:"profit",itemsLabel:"items",
-recordsLabel:"records",chartTitle:"chart",
-historyTitle:"history",exportBtn:"export",
-clearBtn:"clear",langBtn:"lang"
-};
-Object.entries(map).forEach(([id,k])=>{
-$(id).textContent=tr(k);
-});
-renderAll();
+ lang=lang==="zh"?"en":"zh";
+ const map={subtitle:"subtitle",inputTitle:"input",nLabel:"name",qLabel:"quantity",cLabel:"cost",pLabel:"price",sLabel:"shipping",fLabel:"fee",oLabel:"other",calcBtn:"calc",saveBtn:"save",unitLabel:"unit",totalLabel:"total",rateLabel:"rate",feeLabel:"feeResult",overviewTitle:"overview",salesLabel:"sales",profitLabel:"profit",itemsLabel:"items",recordsLabel:"records",analysisTitle:"analysis",fromLabel:"from",toLabel:"to",weekBtn:"week",monthBtn:"month",allBtn:"all",filteredSalesLabel:"filteredSales",filteredProfitLabel:"filteredProfit",filteredQtyLabel:"filteredQty",avgLabel:"avg",trendTitle:"trend",productsTitle:"products",historyTitle:"history",searchLabel:"search",csvBtn:"csv",backupBtn:"backup",restoreBtn:"restore",clearBtn:"clear",settingsTitle:"settings",thresholdLabel:"threshold",settingsBtn:"settingsBtn",settingsHelp:"settingsHelp",footer:"footer",backupNotice:"backupHint",langBtn:"langBtn"};
+ Object.entries(map).forEach(([id,k])=>{if(id==="totalLabel"||id==="rateLabel"||id==="feeLabel")$(id).firstChild.nodeValue=tr(k);else $(id).textContent=(id==="langBtn"?(lang==="zh"?"English":"中文"):tr(k))});
+ $("name").placeholder=lang==="zh"?"例如：蓝牙耳机":"e.g. Bluetooth earbuds";
+ $("search").placeholder=tr("searchHint");
+ $("message").textContent=latest?(latest.profit>=0?tr("good"):tr("loss")):(lang==="zh"?"填写商品信息后点击计算":"Enter details and calculate");
+ renderAll();
 }
-
-renderAll();
+function init(){
+ loadSettings();
+ renderAll();
+ $("name").placeholder="例如：蓝牙耳机";
+ $("search").placeholder=tr("searchHint");
+}
+init();
 </script>
 </body>
 </html>
