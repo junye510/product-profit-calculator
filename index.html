@@ -1,454 +1,339 @@
 
-
-
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>商品利润计算器 V2.0</title>
-
+<meta name="theme-color" content="#f3f6fc">
+<title>商品利润计算器 V3.0</title>
 <style>
-
 *{box-sizing:border-box}
-
-body{
-
-  margin:0;padding:20px 14px;
-
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
-
-  background:#f2f5fa;color:#202938
-
-}
-
-.container{
-
-  max-width:500px;margin:auto;background:white;
-
-  padding:22px;border-radius:20px;
-
-  box-shadow:0 5px 25px #0000000d
-
-}
-
-h1{text-align:center;color:#1769d2;font-size:25px}
-
-.sub{text-align:center;color:#888;font-size:14px}
-
-label{display:block;margin-top:17px;font-weight:600}
-
-input{
-
-  width:100%;padding:15px;margin-top:8px;
-
-  border:1px solid #d5dce5;border-radius:12px;
-
-  font-size:17px;background:white
-
-}
-
-button{
-
-  border:0;border-radius:11px;padding:14px;
-
-  font-size:16px;font-weight:bold;cursor:pointer
-
-}
-
-.primary{width:100%;margin-top:23px;background:#1769d2;color:white}
-
-.save{width:100%;margin-top:12px;background:#087b45;color:white}
-
-.result{
-
-  margin-top:22px;padding:18px;
-
-  background:#edf5ff;border-radius:14px
-
-}
-
-.number{font-size:30px;font-weight:bold;color:#087b45}
-
-.item{margin:12px 0}
-
-hr{border:0;border-top:1px solid #e5e9ef;margin:25px 0}
-
-.section-title{font-size:20px;font-weight:bold}
-
-.history-card{
-
-  border:1px solid #e1e6ee;border-radius:13px;
-
-  padding:14px;margin-top:12px;background:#fff
-
-}
-
-.history-name{font-size:17px;font-weight:bold}
-
-.history-detail{font-size:14px;color:#667085;line-height:1.8;margin-top:8px}
-
-.history-profit{font-size:20px;font-weight:bold;color:#087b45;margin-top:8px}
-
-.delete{
-
-  margin-top:10px;background:#fff0f0;color:#d93636;
-
-  padding:9px 14px;font-size:14px
-
-}
-
-.clear{
-
-  width:100%;margin-top:15px;background:#f1f2f4;color:#555
-
-}
-
-.empty{text-align:center;color:#999;padding:25px 0}
-
-.footer{text-align:center;color:#aaa;font-size:12px;margin-top:25px}
-
+body{margin:0;padding:16px;background:#f3f6fc;color:#1e293b;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.container{max-width:650px;margin:auto}
+.card{background:white;padding:18px;border-radius:17px;margin-bottom:15px;box-shadow:0 4px 18px #00000008}
+h1{text-align:center;color:#2563eb;font-size:24px}
+.sub{text-align:center;color:#888;font-size:13px}
+h2{font-size:18px}
+label{display:block;margin-top:13px;font-weight:600;font-size:14px}
+input{width:100%;padding:13px;margin-top:7px;border:1px solid #dce3ed;border-radius:10px;font-size:16px}
+button{border:0;border-radius:10px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
+.primary{width:100%;margin-top:18px;background:#2563eb;color:white}
+.save{width:100%;margin-top:10px;background:#07834f;color:white}
+.lang{background:#e8efff;color:#2563eb}
+.result{margin-top:18px;padding:17px;background:#eff6ff;border-radius:13px}
+.profit{font-size:32px;font-weight:bold;color:#07834f;margin:8px 0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metrics div{font-size:12px;color:#64748b}
+.metrics b{display:block;color:#1e293b;font-size:16px;margin-top:5px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:#f8fafc;padding:13px;border-radius:12px}
+.stat span{font-size:12px;color:#64748b}
+.stat b{display:block;font-size:19px;margin-top:7px;overflow-wrap:anywhere}
+.chart{height:150px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid #ddd;padding-top:15px}
+.barbox{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}
+.bar{width:65%;max-width:32px;background:#3b82f6;border-radius:5px 5px 0 0;min-height:3px}
+.bartext{font-size:10px;color:#64748b;margin-top:6px}
+.history{border:1px solid #e5eaf2;padding:13px;border-radius:12px;margin-top:10px}
+.detail{font-size:13px;color:#64748b;line-height:1.9;margin-top:8px}
+.delete{background:#fff0f0;color:#dc3545;margin-top:10px}
+.export{background:#e8f7ef;color:#07834f;width:100%;margin-top:10px}
+.clear{background:#f1f5f9;color:#475569;width:100%;margin-top:10px}
+.empty{text-align:center;color:#999;padding:22px}
+@media(max-width:400px){body{padding:10px}.card{padding:14px}}
 </style>
-
 </head>
-
 <body>
-
 <div class="container">
-
 <h1>📦 商品利润计算器</h1>
+<p class="sub">V3.0 · 利润分析 · 数据导出</p>
 
-<p class="sub">V2.0 · 计算利润 · 保存记录 · 管理商品</p>
-
-<label>商品名称</label>
-
-<input id="name" type="text" placeholder="例如：蓝牙耳机">
-
-<label>商品成本（元）</label>
-
-<input id="cost" type="number" value="30" min="0" step="0.01">
-
-<label>商品售价（元）</label>
-
-<input id="price" type="number" value="59" min="0" step="0.01">
-
-<label>快递费用（元）</label>
-
-<input id="shipping" type="number" value="5" min="0" step="0.01">
-
-<label>平台手续费（%）</label>
-
-<input id="fee" type="number" value="2" min="0" max="100" step="0.1">
-
-<label>其他成本（元）</label>
-
-<input id="other" type="number" value="0" min="0" step="0.01">
-
-<label>销售数量（件）</label>
-
-<input id="quantity" type="number" value="1" min="1" step="1">
-
-<button class="primary" onclick="calculate()">计算商品利润</button>
-
-<div class="result">
-
-  <div class="item">单件利润</div>
-
-  <div class="number" id="unit">¥0.00</div>
-
-  <div class="item">总利润：<b id="total">¥0.00</b></div>
-
-  <div class="item">利润率：<b id="rate">0%</b></div>
-
-  <div class="item">单件手续费：<b id="feeResult">¥0.00</b></div>
-
-  <small id="message">请输入商品信息并计算</small>
-
+<div style="text-align:right">
+<button class="lang" onclick="toggleLang()" id="langBtn">English</button>
 </div>
 
-<button class="save" onclick="saveRecord()">💾 保存本次记录</button>
+<div class="card">
+<h2 id="inputTitle">商品信息</h2>
 
-<hr>
+<label id="nLabel">商品名称</label>
+<input id="name" placeholder="例如：蓝牙耳机">
 
-<div class="section-title">📋 商品历史记录</div>
+<label id="cLabel">商品成本（元）</label>
+<input id="cost" type="number" value="30" min="0" step="0.01">
 
-<p class="sub">已保存的商品利润数据</p>
+<label id="pLabel">商品售价（元）</label>
+<input id="price" type="number" value="59" min="0" step="0.01">
 
+<label id="sLabel">快递费用（元）</label>
+<input id="shipping" type="number" value="5" min="0" step="0.01">
+
+<label id="fLabel">平台手续费（%）</label>
+<input id="fee" type="number" value="2" min="0" max="100" step="0.1">
+
+<label id="oLabel">其他成本（元）</label>
+<input id="other" type="number" value="0" min="0" step="0.01">
+
+<label id="qLabel">销售数量（件）</label>
+<input id="quantity" type="number" value="1" min="1" step="1">
+
+<button class="primary" onclick="calculate()" id="calcBtn">计算商品利润</button>
+<button class="save" onclick="saveRecord()" id="saveBtn">💾 保存本次记录</button>
+
+<div class="result">
+<div id="unitLabel">单件利润</div>
+<div class="profit" id="unit">¥0.00</div>
+<div class="metrics">
+<div id="totalLabel">总利润<b id="total">¥0.00</b></div>
+<div id="rateLabel">利润率<b id="rate">0%</b></div>
+<div id="feeLabel">单件手续费<b id="feeResult">¥0.00</b></div>
+</div>
+<p id="message">请输入商品信息并计算</p>
+</div>
+</div>
+
+<div class="card">
+<h2 id="overviewTitle">📊 经营数据总览</h2>
+<div class="stats">
+<div class="stat"><span id="salesLabel">总销售额</span><b id="sales">¥0.00</b></div>
+<div class="stat"><span id="profitLabel">累计总利润</span><b id="profitStat">¥0.00</b></div>
+<div class="stat"><span id="itemsLabel">销售总件数</span><b id="items">0</b></div>
+<div class="stat"><span id="recordsLabel">商品记录数</span><b id="records">0</b></div>
+</div>
+</div>
+
+<div class="card">
+<h2 id="chartTitle">📈 最近7条记录利润趋势</h2>
+<div class="chart" id="chart"></div>
+</div>
+
+<div class="card">
+<h2 id="historyTitle">📋 商品历史记录</h2>
+<button class="export" onclick="exportCSV()" id="exportBtn">⬇ 导出 Excel 表格</button>
 <div id="history"></div>
-
-<button class="clear" onclick="clearHistory()">清空全部历史记录</button>
-
-<div class="footer">商品利润计算器 V2.0</div>
-
+<button class="clear" onclick="clearHistory()" id="clearBtn">清空全部历史记录</button>
+</div>
+<p class="sub">V3.0 · 数据保存在当前设备</p>
 </div>
 
 <script>
+const $=id=>document.getElementById(id);
+const KEY="productProfitHistoryV2";
+let lang="zh";
 
-const $ = id => document.getElementById(id);
+const text={
+zh:{
+input:"商品信息",name:"商品名称",cost:"商品成本（元）",
+price:"商品售价（元）",shipping:"快递费用（元）",
+fee:"平台手续费（%）",other:"其他成本（元）",
+quantity:"销售数量（件）",calc:"计算商品利润",
+save:"💾 保存本次记录",unit:"单件利润",
+total:"总利润",rate:"利润率",feeResult:"单件手续费",
+overview:"📊 经营数据总览",sales:"总销售额",
+profit:"累计总利润",items:"销售总件数",
+records:"商品记录数",chart:"📈 最近7条记录利润趋势",
+history:"📋 商品历史记录",export:"⬇ 导出 Excel 表格",
+clear:"清空全部历史记录",delete:"删除记录",
+empty:"还没有历史记录",good:"🎉 当前商品有利润！",
+bad:"⚠️ 当前商品处于亏损状态！",
+confirm:"确定删除这条记录吗？",
+clearConfirm:"确定清空全部历史记录吗？",
+saved:"保存成功！",fill:"请填写商品名称",
+invalid:"请检查金额、手续费和销售数量。",
+exportEmpty:"暂无可导出的记录。",
+lang:"English",date:"日期",quantityWord:"数量",
+costWord:"成本",priceWord:"售价",shippingWord:"快递",
+feeWord:"手续费",margin:"利润率"
+},
+en:{
+input:"Product Details",name:"Product Name",cost:"Unit Cost",
+price:"Selling Price",shipping:"Shipping",fee:"Platform Fee (%)",
+other:"Other Cost",quantity:"Quantity",calc:"Calculate Profit",
+save:"💾 Save Record",unit:"Profit per Unit",total:"Total Profit",
+rate:"Profit Margin",feeResult:"Fee per Unit",
+overview:"📊 Business Overview",sales:"Total Sales",
+profit:"Total Profit",items:"Units Sold",records:"Records",
+chart:"📈 Recent 7 Profit Records",history:"📋 History",
+export:"⬇ Export CSV for Excel",clear:"Clear All Records",
+delete:"Delete",empty:"No saved records",good:"🎉 Profitable!",
+bad:"⚠️ Making a loss!",confirm:"Delete this record?",
+clearConfirm:"Clear all history?",saved:"Saved successfully!",
+fill:"Please enter product name",invalid:"Please check your inputs.",
+exportEmpty:"No records to export.",lang:"中文",date:"Date",
+quantityWord:"Quantity",costWord:"Cost",priceWord:"Price",
+shippingWord:"Shipping",feeWord:"Fee",margin:"Margin"
+}
+};
 
-const KEY = "productProfitHistoryV2";
+function tr(k){return text[lang][k]}
+function money(n){return "¥"+Number(n||0).toFixed(2)}
 
 function getData(){
+const d={
+name:$("name").value.trim(),
+cost:Number($("cost").value),
+price:Number($("price").value),
+shipping:Number($("shipping").value),
+fee:Number($("fee").value),
+other:Number($("other").value),
+quantity:Number($("quantity").value)
+};
 
-  const data = {
+if(!d.name){alert(tr("fill"));return null}
 
-    name: $("name").value.trim(),
-
-    cost: Number($("cost").value),
-
-    price: Number($("price").value),
-
-    shipping: Number($("shipping").value),
-
-    fee: Number($("fee").value),
-
-    other: Number($("other").value),
-
-    quantity: Number($("quantity").value)
-
-  };
-
-  if(!data.name){
-
-    alert("请填写商品名称");
-
-    $("name").focus();
-
-    return null;
-
-  }
-
-  if(
-
-    [data.cost,data.price,data.shipping,data.fee,
-
-     data.other,data.quantity].some(x=>!Number.isFinite(x)||x<0)
-
-    || data.quantity<1
-
-    || !Number.isInteger(data.quantity)
-
-    || data.fee>100
-
-  ){
-
-    alert("请检查输入：手续费不能超过100%，数量必须为正整数，其他金额不能小于0");
-
-    return null;
-
-  }
-
-  return data;
-
+if([d.cost,d.price,d.shipping,d.fee,d.other,d.quantity]
+.some(x=>!Number.isFinite(x)||x<0)
+||d.quantity<1||!Number.isInteger(d.quantity)||d.fee>100){
+alert(tr("invalid"));return null;
+}
+return d;
 }
 
 function calculate(){
+const d=getData();
+if(!d)return null;
 
-  const d = getData();
+const feeMoney=d.price*d.fee/100;
+const profit=d.price-d.cost-d.shipping-d.other-feeMoney;
+const total=profit*d.quantity;
+const rate=d.price>0?profit/d.price*100:0;
 
-  if(!d) return null;
+$("unit").textContent=money(profit);
+$("total").textContent=money(total);
+$("rate").textContent=rate.toFixed(2)+"%";
+$("feeResult").textContent=money(feeMoney);
+$("unit").style.color=profit>=0?"#07834f":"#dc3545";
+$("message").textContent=profit>=0?tr("good"):tr("bad");
 
-  const feeMoney = d.price*d.fee/100;
-
-  const profit = d.price-d.cost-d.shipping-d.other-feeMoney;
-
-  const total = profit*d.quantity;
-
-  const rate = d.price>0 ? profit/d.price*100 : 0;
-
-  $("unit").textContent="¥"+profit.toFixed(2);
-
-  $("total").textContent="¥"+total.toFixed(2);
-
-  $("rate").textContent=rate.toFixed(2)+"%";
-
-  $("feeResult").textContent="¥"+feeMoney.toFixed(2);
-
-  $("unit").style.color=profit>=0?"#087b45":"#d93636";
-
-  $("message").textContent=profit>=0
-
-    ?"🎉 当前商品有利润！"
-
-    :"⚠️ 当前商品处于亏损状态！";
-
-  return {
-
-    ...d,
-
-    feeMoney,
-
-    profit,
-
-    total,
-
-    rate,
-
-    date:new Date().toLocaleString("zh-CN")
-
-  };
-
+return {...d,feeMoney,profit,total,rate,date:new Date().toLocaleString()};
 }
 
 function getHistory(){
-
-  try{
-
-    const data=JSON.parse(localStorage.getItem(KEY)||"[]");
-
-    return Array.isArray(data)?data:[];
-
-  }catch(e){
-
-    return [];
-
-  }
-
+try{
+const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+return Array.isArray(h)?h:[];
+}catch(e){return []}
 }
 
 function saveRecord(){
-
-  const result=calculate();
-
-  if(!result) return;
-
-  try{
-
-    const history=getHistory();
-
-    history.unshift({
-
-      ...result,
-
-      id:Date.now()+"_"+Math.random().toString(36).slice(2,8)
-
-    });
-
-    localStorage.setItem(KEY,JSON.stringify(history));
-
-    renderHistory();
-
-    alert("保存成功！已加入商品历史记录。");
-
-  }catch(e){
-
-    alert("保存失败，请检查手机浏览器存储空间或隐私设置。");
-
-  }
-
+const r=calculate();
+if(!r)return;
+const h=getHistory();
+h.unshift({...r,id:Date.now()+"_"+Math.random().toString(36).slice(2)});
+localStorage.setItem(KEY,JSON.stringify(h));
+renderAll();
+alert(tr("saved"));
 }
 
-function escapeHTML(value){
+function escapeHTML(v){
+return String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;","'":"&#39;"
+})[c]);
+}
 
-  return String(value).replace(/[&<>"']/g,function(c){
+function renderStats(h){
+const sales=h.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.quantity)||0),0);
+const profit=h.reduce((s,x)=>s+(Number(x.total)||0),0);
+const qty=h.reduce((s,x)=>s+(Number(x.quantity)||0),0);
+$("sales").textContent=money(sales);
+$("profitStat").textContent=money(profit);
+$("items").textContent=qty;
+$("records").textContent=h.length;
+$("profitStat").style.color=profit<0?"#dc3545":"#07834f";
+}
 
-    return {
-
-      "&":"&amp;",
-
-      "<":"&lt;",
-
-      ">":"&gt;",
-
-      '"':"&quot;",
-
-      "'":"&#39;"
-
-    }[c];
-
-  });
-
+function renderChart(h){
+const data=h.slice(0,7).reverse();
+const max=Math.max(1,...data.map(x=>Math.abs(Number(x.total)||0)));
+if(!data.length){
+$("chart").innerHTML='<div class="empty">暂无数据</div>';
+return;
+}
+$("chart").innerHTML=data.map(x=>{
+const v=Number(x.total)||0;
+const height=Math.max(3,Math.abs(v)/max*100);
+return '<div class="barbox"><div class="bar" style="height:'+height+'px;background:'+(v<0?'#dc7777':'#3b82f6')+'"></div><div class="bartext">'+escapeHTML(String(x.date||"").slice(0,8))+'</div></div>';
+}).join("");
 }
 
 function renderHistory(){
+const h=getHistory();
+if(!h.length){
+$("history").innerHTML='<div class="empty">'+tr("empty")+'</div>';
+return;
+}
 
-  const history=getHistory();
+$("history").innerHTML=h.map(x=>
+'<div class="history"><b>📦 '+escapeHTML(x.name)+'</b>'+
+'<div class="detail">'+
+tr("date")+"："+escapeHTML(x.date)+'<br>'+
+tr("costWord")+"："+money(x.cost)+'<br>'+
+tr("priceWord")+"："+money(x.price)+'<br>'+
+tr("shippingWord")+"："+money(x.shipping)+'<br>'+
+tr("quantityWord")+"："+Number(x.quantity)+'<br>'+
+tr("feeWord")+"："+money(x.feeMoney)+'<br>'+
+tr("margin")+"："+Number(x.rate||0).toFixed(2)+'%'+
+'<br><b>'+tr("total")+"："+money(x.total)+'</b></div>'+
+'<button class="delete" onclick="deleteRecord('+JSON.stringify(String(x.id))+')">'+tr("delete")+'</button></div>'
+).join("");
+}
 
-  const box=$("history");
-
-  if(history.length===0){
-
-    box.innerHTML='<div class="empty">还没有历史记录，快来保存第一件商品吧！</div>';
-
-    return;
-
-  }
-
-  box.innerHTML=history.map(item=>`
-
-    <div class="history-card">
-
-      <div class="history-name">📦 ${escapeHTML(item.name)}</div>
-
-      <div class="history-detail">
-
-        日期：${escapeHTML(item.date)}<br>
-
-        成本：¥${Number(item.cost).toFixed(2)}<br>
-
-        售价：¥${Number(item.price).toFixed(2)}<br>
-
-        快递：¥${Number(item.shipping).toFixed(2)}<br>
-
-        数量：${Number(item.quantity)} 件<br>
-
-        手续费：¥${Number(item.feeMoney).toFixed(2)}<br>
-
-        利润率：${Number(item.rate).toFixed(2)}%
-
-      </div>
-
-      <div class="history-profit" style="color:${item.total>=0?'#087b45':'#d93636'}">
-
-        总利润：¥${Number(item.total).toFixed(2)}
-
-      </div>
-
-      <button class="delete" onclick="deleteRecord('${escapeHTML(item.id)}')">
-
-        删除记录
-
-      </button>
-
-    </div>
-
-  `).join("");
-
+function renderAll(){
+const h=getHistory();
+renderStats(h);
+renderChart(h);
+renderHistory();
 }
 
 function deleteRecord(id){
-
-  if(!confirm("确定删除这条商品记录吗？")) return;
-
-  const history=getHistory().filter(item=>item.id!==id);
-
-  localStorage.setItem(KEY,JSON.stringify(history));
-
-  renderHistory();
-
+if(!confirm(tr("confirm")))return;
+localStorage.setItem(KEY,JSON.stringify(
+getHistory().filter(x=>String(x.id)!==String(id))
+));
+renderAll();
 }
 
 function clearHistory(){
-
-  if(!confirm("确定清空全部历史记录吗？此操作无法撤销。")) return;
-
-  localStorage.removeItem(KEY);
-
-  renderHistory();
-
+if(!confirm(tr("clearConfirm")))return;
+localStorage.removeItem(KEY);
+renderAll();
 }
 
-calculate();
+function exportCSV(){
+const h=getHistory();
+if(!h.length){alert(tr("exportEmpty"));return;}
+const headers=["商品名称","成本","售价","快递费","手续费率","其他成本","数量","单件手续费","单件利润","总利润","利润率","日期"];
+const keys=["name","cost","price","shipping","fee","other","quantity","feeMoney","profit","total","rate","date"];
+const rows=h.map(x=>keys.map(k=>'"'+String(x[k]??"").replace(/"/g,'""')+'"').join(","));
+const csv="\uFEFF"+headers.join(",")+"\r\n"+rows.join("\r\n");
+const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;a.download="商品利润记录.csv";
+a.click();
+URL.revokeObjectURL(url);
+}
 
-renderHistory();
+function toggleLang(){
+lang=lang==="zh"?"en":"zh";
+const map={
+inputTitle:"input",nLabel:"name",cLabel:"cost",
+pLabel:"price",sLabel:"shipping",fLabel:"fee",
+oLabel:"other",qLabel:"quantity",calcBtn:"calc",
+saveBtn:"save",unitLabel:"unit",totalLabel:"total",
+rateLabel:"rate",feeLabel:"feeResult",
+overviewTitle:"overview",salesLabel:"sales",
+profitLabel:"profit",itemsLabel:"items",
+recordsLabel:"records",chartTitle:"chart",
+historyTitle:"history",exportBtn:"export",
+clearBtn:"clear",langBtn:"lang"
+};
+Object.entries(map).forEach(([id,k])=>{
+$(id).textContent=tr(k);
+});
+renderAll();
+}
 
+renderAll();
 </script>
-
 </body>
-
 </html>
