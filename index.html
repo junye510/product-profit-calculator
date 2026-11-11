@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品利润计算器</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;padding:24px 16px;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f2f5fa;color:#202938
+}
+.container{
+  max-width:480px;margin:auto;
+  background:white;padding:24px;
+  border-radius:20px;
+  box-shadow:0 5px 25px #0000000d
+}
+h1{text-align:center;color:#1769d2;font-size:25px}
+.sub{text-align:center;color:#777;font-size:14px}
+label{display:block;margin-top:16px;font-weight:600}
+input{
+  width:100%;padding:13px;margin-top:7px;
+  border:1px solid #d5dce5;border-radius:10px;
+  font-size:17px
+}
+button{
+  width:100%;margin-top:24px;padding:15px;
+  border:0;border-radius:12px;
+  background:#1769d2;color:white;
+  font-size:18px;font-weight:bold
+}
+.result{
+  margin-top:22px;padding:18px;
+  background:#edf5ff;border-radius:14px
+}
+.number{font-size:28px;font-weight:bold;color:#087b45}
+.item{margin:10px 0}
+small{color:#777}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📦 商品利润计算器</h1>
+<p class="sub">简单计算每件商品能赚多少钱</p>
+
+<label>商品成本（元）</label>
+<input id="cost" type="number" value="30" min="0" step="0.01">
+
+<label>商品售价（元）</label>
+<input id="price" type="number" value="59" min="0" step="0.01">
+
+<label>快递费用（元）</label>
+<input id="shipping" type="number" value="5" min="0" step="0.01">
+
+<label>平台手续费（%）</label>
+<input id="fee" type="number" value="2" min="0" max="100" step="0.1">
+
+<label>其他成本（元）</label>
+<input id="other" type="number" value="0" min="0" step="0.01">
+
+<label>销售数量（件）</label>
+<input id="quantity" type="number" value="1" min="1" step="1">
+
+<button onclick="calculate()">计算商品利润</button>
+
+<div class="result">
+<div class="item">单件利润</div>
+<div class="number" id="unit">¥0.00</div>
+<div class="item">总利润：<b id="total">¥0.00</b></div>
+<div class="item">利润率：<b id="rate">0%</b></div>
+<div class="item">手续费：<b id="feeResult">¥0.00</b></div>
+<small id="message">输入商品数据后点击计算</small>
+</div>
+</div>
+
+<script>
+function calculate(){
+  const cost=Number(document.getElementById("cost").value);
+  const price=Number(document.getElementById("price").value);
+  const shipping=Number(document.getElementById("shipping").value);
+  const fee=Number(document.getElementById("fee").value);
+  const other=Number(document.getElementById("other").value);
+  const quantity=Number(document.getElementById("quantity").value);
+
+  if([cost,price,shipping,fee,other,quantity].some(x=>!Number.isFinite(x)||x<0)
+     ||quantity<1||fee>100){
+    alert("请检查输入，手续费不能超过100%，数量至少为1");
+    return;
+  }
+
+  const feeMoney=price*fee/100;
+  const profit=price-cost-shipping-other-feeMoney;
+  const total=profit*quantity;
+  const rate=price>0?profit/price*100:0;
+
+  document.getElementById("unit").textContent="¥"+profit.toFixed(2);
+  document.getElementById("total").textContent="¥"+total.toFixed(2);
+  document.getElementById("rate").textContent=rate.toFixed(2)+"%";
+  document.getElementById("feeResult").textContent="¥"+feeMoney.toFixed(2);
+  document.getElementById("unit").style.color=profit>=0?"#087b45":"#d93636";
+  document.getElementById("message").textContent=
+    profit>=0?"🎉 当前商品有利润！":"⚠️ 当前商品处于亏损状态！";
+}
+calculate();
+</script>
+</body>
+</html>
