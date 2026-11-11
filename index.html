@@ -1,110 +1,454 @@
 
+
+
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>商品利润计算器</title>
+
+<title>商品利润计算器 V2.0</title>
+
 <style>
+
 *{box-sizing:border-box}
+
 body{
-  margin:0;padding:24px 16px;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+
+  margin:0;padding:20px 14px;
+
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+
   background:#f2f5fa;color:#202938
+
 }
+
 .container{
-  max-width:480px;margin:auto;
-  background:white;padding:24px;
-  border-radius:20px;
+
+  max-width:500px;margin:auto;background:white;
+
+  padding:22px;border-radius:20px;
+
   box-shadow:0 5px 25px #0000000d
+
 }
+
 h1{text-align:center;color:#1769d2;font-size:25px}
-.sub{text-align:center;color:#777;font-size:14px}
-label{display:block;margin-top:16px;font-weight:600}
+
+.sub{text-align:center;color:#888;font-size:14px}
+
+label{display:block;margin-top:17px;font-weight:600}
+
 input{
-  width:100%;padding:13px;margin-top:7px;
-  border:1px solid #d5dce5;border-radius:10px;
-  font-size:17px
+
+  width:100%;padding:15px;margin-top:8px;
+
+  border:1px solid #d5dce5;border-radius:12px;
+
+  font-size:17px;background:white
+
 }
+
 button{
-  width:100%;margin-top:24px;padding:15px;
-  border:0;border-radius:12px;
-  background:#1769d2;color:white;
-  font-size:18px;font-weight:bold
+
+  border:0;border-radius:11px;padding:14px;
+
+  font-size:16px;font-weight:bold;cursor:pointer
+
 }
+
+.primary{width:100%;margin-top:23px;background:#1769d2;color:white}
+
+.save{width:100%;margin-top:12px;background:#087b45;color:white}
+
 .result{
+
   margin-top:22px;padding:18px;
+
   background:#edf5ff;border-radius:14px
+
 }
-.number{font-size:28px;font-weight:bold;color:#087b45}
-.item{margin:10px 0}
-small{color:#777}
+
+.number{font-size:30px;font-weight:bold;color:#087b45}
+
+.item{margin:12px 0}
+
+hr{border:0;border-top:1px solid #e5e9ef;margin:25px 0}
+
+.section-title{font-size:20px;font-weight:bold}
+
+.history-card{
+
+  border:1px solid #e1e6ee;border-radius:13px;
+
+  padding:14px;margin-top:12px;background:#fff
+
+}
+
+.history-name{font-size:17px;font-weight:bold}
+
+.history-detail{font-size:14px;color:#667085;line-height:1.8;margin-top:8px}
+
+.history-profit{font-size:20px;font-weight:bold;color:#087b45;margin-top:8px}
+
+.delete{
+
+  margin-top:10px;background:#fff0f0;color:#d93636;
+
+  padding:9px 14px;font-size:14px
+
+}
+
+.clear{
+
+  width:100%;margin-top:15px;background:#f1f2f4;color:#555
+
+}
+
+.empty{text-align:center;color:#999;padding:25px 0}
+
+.footer{text-align:center;color:#aaa;font-size:12px;margin-top:25px}
+
 </style>
+
 </head>
+
 <body>
+
 <div class="container">
+
 <h1>📦 商品利润计算器</h1>
-<p class="sub">简单计算每件商品能赚多少钱</p>
+
+<p class="sub">V2.0 · 计算利润 · 保存记录 · 管理商品</p>
+
+<label>商品名称</label>
+
+<input id="name" type="text" placeholder="例如：蓝牙耳机">
 
 <label>商品成本（元）</label>
+
 <input id="cost" type="number" value="30" min="0" step="0.01">
 
 <label>商品售价（元）</label>
+
 <input id="price" type="number" value="59" min="0" step="0.01">
 
 <label>快递费用（元）</label>
+
 <input id="shipping" type="number" value="5" min="0" step="0.01">
 
 <label>平台手续费（%）</label>
+
 <input id="fee" type="number" value="2" min="0" max="100" step="0.1">
 
 <label>其他成本（元）</label>
+
 <input id="other" type="number" value="0" min="0" step="0.01">
 
 <label>销售数量（件）</label>
+
 <input id="quantity" type="number" value="1" min="1" step="1">
 
-<button onclick="calculate()">计算商品利润</button>
+<button class="primary" onclick="calculate()">计算商品利润</button>
 
 <div class="result">
-<div class="item">单件利润</div>
-<div class="number" id="unit">¥0.00</div>
-<div class="item">总利润：<b id="total">¥0.00</b></div>
-<div class="item">利润率：<b id="rate">0%</b></div>
-<div class="item">手续费：<b id="feeResult">¥0.00</b></div>
-<small id="message">输入商品数据后点击计算</small>
+
+  <div class="item">单件利润</div>
+
+  <div class="number" id="unit">¥0.00</div>
+
+  <div class="item">总利润：<b id="total">¥0.00</b></div>
+
+  <div class="item">利润率：<b id="rate">0%</b></div>
+
+  <div class="item">单件手续费：<b id="feeResult">¥0.00</b></div>
+
+  <small id="message">请输入商品信息并计算</small>
+
 </div>
+
+<button class="save" onclick="saveRecord()">💾 保存本次记录</button>
+
+<hr>
+
+<div class="section-title">📋 商品历史记录</div>
+
+<p class="sub">已保存的商品利润数据</p>
+
+<div id="history"></div>
+
+<button class="clear" onclick="clearHistory()">清空全部历史记录</button>
+
+<div class="footer">商品利润计算器 V2.0</div>
+
 </div>
 
 <script>
-function calculate(){
-  const cost=Number(document.getElementById("cost").value);
-  const price=Number(document.getElementById("price").value);
-  const shipping=Number(document.getElementById("shipping").value);
-  const fee=Number(document.getElementById("fee").value);
-  const other=Number(document.getElementById("other").value);
-  const quantity=Number(document.getElementById("quantity").value);
 
-  if([cost,price,shipping,fee,other,quantity].some(x=>!Number.isFinite(x)||x<0)
-     ||quantity<1||fee>100){
-    alert("请检查输入，手续费不能超过100%，数量至少为1");
-    return;
+const $ = id => document.getElementById(id);
+
+const KEY = "productProfitHistoryV2";
+
+function getData(){
+
+  const data = {
+
+    name: $("name").value.trim(),
+
+    cost: Number($("cost").value),
+
+    price: Number($("price").value),
+
+    shipping: Number($("shipping").value),
+
+    fee: Number($("fee").value),
+
+    other: Number($("other").value),
+
+    quantity: Number($("quantity").value)
+
+  };
+
+  if(!data.name){
+
+    alert("请填写商品名称");
+
+    $("name").focus();
+
+    return null;
+
   }
 
-  const feeMoney=price*fee/100;
-  const profit=price-cost-shipping-other-feeMoney;
-  const total=profit*quantity;
-  const rate=price>0?profit/price*100:0;
+  if(
 
-  document.getElementById("unit").textContent="¥"+profit.toFixed(2);
-  document.getElementById("total").textContent="¥"+total.toFixed(2);
-  document.getElementById("rate").textContent=rate.toFixed(2)+"%";
-  document.getElementById("feeResult").textContent="¥"+feeMoney.toFixed(2);
-  document.getElementById("unit").style.color=profit>=0?"#087b45":"#d93636";
-  document.getElementById("message").textContent=
-    profit>=0?"🎉 当前商品有利润！":"⚠️ 当前商品处于亏损状态！";
+    [data.cost,data.price,data.shipping,data.fee,
+
+     data.other,data.quantity].some(x=>!Number.isFinite(x)||x<0)
+
+    || data.quantity<1
+
+    || !Number.isInteger(data.quantity)
+
+    || data.fee>100
+
+  ){
+
+    alert("请检查输入：手续费不能超过100%，数量必须为正整数，其他金额不能小于0");
+
+    return null;
+
+  }
+
+  return data;
+
 }
+
+function calculate(){
+
+  const d = getData();
+
+  if(!d) return null;
+
+  const feeMoney = d.price*d.fee/100;
+
+  const profit = d.price-d.cost-d.shipping-d.other-feeMoney;
+
+  const total = profit*d.quantity;
+
+  const rate = d.price>0 ? profit/d.price*100 : 0;
+
+  $("unit").textContent="¥"+profit.toFixed(2);
+
+  $("total").textContent="¥"+total.toFixed(2);
+
+  $("rate").textContent=rate.toFixed(2)+"%";
+
+  $("feeResult").textContent="¥"+feeMoney.toFixed(2);
+
+  $("unit").style.color=profit>=0?"#087b45":"#d93636";
+
+  $("message").textContent=profit>=0
+
+    ?"🎉 当前商品有利润！"
+
+    :"⚠️ 当前商品处于亏损状态！";
+
+  return {
+
+    ...d,
+
+    feeMoney,
+
+    profit,
+
+    total,
+
+    rate,
+
+    date:new Date().toLocaleString("zh-CN")
+
+  };
+
+}
+
+function getHistory(){
+
+  try{
+
+    const data=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+    return Array.isArray(data)?data:[];
+
+  }catch(e){
+
+    return [];
+
+  }
+
+}
+
+function saveRecord(){
+
+  const result=calculate();
+
+  if(!result) return;
+
+  try{
+
+    const history=getHistory();
+
+    history.unshift({
+
+      ...result,
+
+      id:Date.now()+"_"+Math.random().toString(36).slice(2,8)
+
+    });
+
+    localStorage.setItem(KEY,JSON.stringify(history));
+
+    renderHistory();
+
+    alert("保存成功！已加入商品历史记录。");
+
+  }catch(e){
+
+    alert("保存失败，请检查手机浏览器存储空间或隐私设置。");
+
+  }
+
+}
+
+function escapeHTML(value){
+
+  return String(value).replace(/[&<>"']/g,function(c){
+
+    return {
+
+      "&":"&amp;",
+
+      "<":"&lt;",
+
+      ">":"&gt;",
+
+      '"':"&quot;",
+
+      "'":"&#39;"
+
+    }[c];
+
+  });
+
+}
+
+function renderHistory(){
+
+  const history=getHistory();
+
+  const box=$("history");
+
+  if(history.length===0){
+
+    box.innerHTML='<div class="empty">还没有历史记录，快来保存第一件商品吧！</div>';
+
+    return;
+
+  }
+
+  box.innerHTML=history.map(item=>`
+
+    <div class="history-card">
+
+      <div class="history-name">📦 ${escapeHTML(item.name)}</div>
+
+      <div class="history-detail">
+
+        日期：${escapeHTML(item.date)}<br>
+
+        成本：¥${Number(item.cost).toFixed(2)}<br>
+
+        售价：¥${Number(item.price).toFixed(2)}<br>
+
+        快递：¥${Number(item.shipping).toFixed(2)}<br>
+
+        数量：${Number(item.quantity)} 件<br>
+
+        手续费：¥${Number(item.feeMoney).toFixed(2)}<br>
+
+        利润率：${Number(item.rate).toFixed(2)}%
+
+      </div>
+
+      <div class="history-profit" style="color:${item.total>=0?'#087b45':'#d93636'}">
+
+        总利润：¥${Number(item.total).toFixed(2)}
+
+      </div>
+
+      <button class="delete" onclick="deleteRecord('${escapeHTML(item.id)}')">
+
+        删除记录
+
+      </button>
+
+    </div>
+
+  `).join("");
+
+}
+
+function deleteRecord(id){
+
+  if(!confirm("确定删除这条商品记录吗？")) return;
+
+  const history=getHistory().filter(item=>item.id!==id);
+
+  localStorage.setItem(KEY,JSON.stringify(history));
+
+  renderHistory();
+
+}
+
+function clearHistory(){
+
+  if(!confirm("确定清空全部历史记录吗？此操作无法撤销。")) return;
+
+  localStorage.removeItem(KEY);
+
+  renderHistory();
+
+}
+
 calculate();
+
+renderHistory();
+
 </script>
+
 </body>
+
 </html>
